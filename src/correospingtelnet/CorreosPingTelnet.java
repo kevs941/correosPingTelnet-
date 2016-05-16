@@ -27,6 +27,68 @@ public class CorreosPingTelnet {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
+        
+        //172.217.1.174
+        if(verificarPing("192.168.1.220"))
+        {
+            System.out.println("Si dió respuesta");
+            gmail objetoGmail = new gmail(); 
+            objetoGmail.username = "0161478@up.edu.mx";
+            objetoGmail.password = "AnilloFlor4";
+            objetoGmail.to = "0161478@up.edu.mx";
+            objetoGmail.filename = "imagen.png";
+            objetoGmail.subject = "Archivo de gráfica";
+            objetoGmail.body = "Buenas tardes estimado señor. Le mando su amable petición en este correo. ";            
+            objetoGmail.sendMailFromObject();
+            //enviar correo 
+        }
+        else{
+            System.out.println("No dió respuesta");
+            Telnet.doTelnet("64.62.142.154");            
+        }
+        
+        
+    
+    }
+    
+    private static boolean verificarPing(String ip) throws Exception{
+        final IcmpPingRequest request = IcmpPingUtil.createIcmpPingRequest ();
+        request.setHost (ip); 
+
+        // delegate
+        final IcmpPingResponse response = IcmpPingUtil.executePingRequest (request);
+
+        // log
+        final String formattedResponse = IcmpPingUtil.formatResponse (response);
+        System.out.println (formattedResponse);
+        //Aquí tomaremos el valor de los ms y los guardaremos en un arreglo. 
+        String[] splitStr = formattedResponse.split("\\s+");
+        int valor = 0; 
+        if(splitStr.length>5)
+        {   
+            //Quitamos los ms
+            char[] cadenaEnChars = splitStr[4].toCharArray();             
+            if(cadenaEnChars.length==8){
+            valor = Integer.parseInt(Character.toString(cadenaEnChars[5])); 
+            }
+            else{
+                valor = Integer.parseInt(Character.toString(cadenaEnChars[5])+ Character.toString(cadenaEnChars[6]));
+            }
+            return true;
+             
+        } 
+        else
+        {
+            //Aquí hacer telnet
+            //Aquí enviar correo             
+            return false; 
+            
+        }
+                
+      
+    }
+    
+    private void mainAnterior() throws Exception{
         //JFreeChart chart; 
         //chart = createPlot();         
         //ChartUtilities.saveChartAsPNG(new File("imagen.png"), chart, 1000, 600);
@@ -88,10 +150,5 @@ public class CorreosPingTelnet {
          true , true , false);
         
         ChartUtilities.saveChartAsPNG(new File("imagen.png"), xylineChart, 1000, 600);
-        
-        
-        
-        
-    
     }
 }
